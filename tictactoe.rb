@@ -10,18 +10,20 @@ class Game
     puts "\nThis is the tictactoe board!\n"
     puts "\nPlayer 1 plays with 'X', and Player 2 plays with 'O'.\n"
     while no_winner
+      @board.full
       @players.turn(board.matrix, players.player1)
+      @board.full
       @board.show
-      @board.win(self.players.player1)
+      @board.full
+      @board.win(players.player1)
+      @board.full
       @players.turn(board.matrix, players.player2)
+      @board.full
       @board.show
-      @board.win(self.players.player2)
+      @board.full
+      @board.win(players.player2)
+      @board.full
     end
-  end
-
-  private
-
-  def finish
   end
 end
 
@@ -38,21 +40,52 @@ class Board
   end
 
   def win(sign)
-    winning_condition_1 = (@matrix[0][0].to_s + @matrix[0][1].to_s + @matrix[0][2].to_s == sign*3)
-    winning_condition_2 = (@matrix[1][0].to_s + @matrix[1][1].to_s + @matrix[1][2].to_s == sign*3)
-    winning_condition_3 = (@matrix[2][0].to_s + @matrix[2][1].to_s + @matrix[2][2].to_s == sign*3)
-    winning_condition_4 = (@matrix[0][0].to_s + @matrix[1][0].to_s + @matrix[2][0].to_s == sign*3)
-    winning_condition_5 = (@matrix[0][1].to_s + @matrix[1][1].to_s + @matrix[2][1].to_s == sign*3)
-    winning_condition_6 = (@matrix[0][2].to_s + @matrix[1][2].to_s + @matrix[2][2].to_s == sign*3)
-    winning_condition_7 = (@matrix[0][0].to_s + @matrix[1][1].to_s + @matrix[2][2].to_s == sign*3)
-    winning_condition_8 = (@matrix[0][2].to_s + @matrix[1][1].to_s + @matrix[2][0].to_s == sign*3)
-    winning_array = [winning_condition_1.to_s, winning_condition_2.to_s, winning_condition_3.to_s,
-                      winning_condition_4.to_s, winning_condition_5.to_s, winning_condition_6.to_s,
-                      winning_condition_7.to_s, winning_condition_8.to_s]
-    winning_array.each do |combination|
-      if @matrix.include?(combination)
-        puts "We have a winner! It is player representing class #{sign}"
-        exit
+    if @matrix[0][0].to_s + @matrix[0][1].to_s + @matrix[0][2].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[1][0].to_s + @matrix[1][1].to_s + @matrix[1][2].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[2][0].to_s + @matrix[2][1].to_s + @matrix[2][2].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[0][0].to_s + @matrix[1][0].to_s + @matrix[2][0].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[0][1].to_s + @matrix[1][1].to_s + @matrix[2][1].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[0][2].to_s + @matrix[1][2].to_s + @matrix[2][2].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[0][0].to_s + @matrix[1][1].to_s + @matrix[2][2].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    elsif @matrix[0][2].to_s + @matrix[1][1].to_s + @matrix[2][0].to_s == sign*3
+      puts "We have a winner! It is player representing class #{sign}"
+      exit
+    end
+  end
+
+  def full
+    @matrix.each do |array|
+      if array.all? {|position| position == /(X|O)/ } == true
+        begin
+          puts "No one has won, and the board is full!"
+          puts "\n Would you like to start a new game? (Y/N)"
+          answer = Kernel.gets.match(/(Y|N)/)
+        rescue
+          puts "Please enter either Y or N!"
+          retry
+        else
+          if answer == "Y"
+            new_matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            @matrix = new_matrix
+          elsif answer == "N"
+            puts "\n Exiting game now"
+            exit
+          end
+        end
       end
     end
   end
