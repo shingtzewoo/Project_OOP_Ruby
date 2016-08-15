@@ -4,25 +4,41 @@ class Game
     @board = Board.new
     @players = Player.new
   end
+
   def start
     no_winner = true
     @board.show
     puts "\nThis is the tictactoe board!\n"
     puts "\nPlayer 1 plays with 'X', and Player 2 plays with 'O'.\n"
     while no_winner
-      @board.full
       @players.turn(board.matrix, players.player1)
-      @board.full
+      self.full
       @board.show
-      @board.full
       @board.win(players.player1)
-      @board.full
       @players.turn(board.matrix, players.player2)
-      @board.full
+      self.full
       @board.show
-      @board.full
       @board.win(players.player2)
-      @board.full
+      self.full
+    end
+  end
+
+  def full
+    if (@board.matrix.all? {|array| array.all? {|position| position == "X" || position == "O" }}) == true
+      puts "\nNo one has won, and the board is full!"
+      puts "\n Would you like to start a new game? (Y/N)"
+      answer = gets.chomp
+      if answer == "Y"
+        new_matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        @board.matrix = new_matrix
+        self.start
+      elsif answer == "N"
+        puts "\n Exiting game now"
+        exit
+      else
+        puts "\nPlease choose a valid option"
+        self.full
+      end
     end
   end
 end
@@ -64,29 +80,6 @@ class Board
     elsif @matrix[0][2].to_s + @matrix[1][1].to_s + @matrix[2][0].to_s == sign*3
       puts "We have a winner! It is player representing class #{sign}"
       exit
-    end
-  end
-
-  def full
-    @matrix.each do |array|
-      if array.all? {|position| position == /(X|O)/ } == true
-        begin
-          puts "No one has won, and the board is full!"
-          puts "\n Would you like to start a new game? (Y/N)"
-          answer = Kernel.gets.match(/(Y|N)/)
-        rescue
-          puts "Please enter either Y or N!"
-          retry
-        else
-          if answer == "Y"
-            new_matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-            @matrix = new_matrix
-          elsif answer == "N"
-            puts "\n Exiting game now"
-            exit
-          end
-        end
-      end
     end
   end
 end
