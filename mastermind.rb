@@ -5,7 +5,6 @@ class Game
     @AI = Computer.new("Jarvis")
     @player = Human.new(player_name)
     @guesses = 12
-    @AI.generator(@board.colors)
     @answer = " "
   end
 
@@ -24,7 +23,17 @@ class Game
         end
       end
     when "codemaker"
+      @player.generate_code
       while guesses > 0
+        @AI.generator(@board.colors)
+        @AI.ai_guess(@player.humancode)
+        guesses-=1
+        @AI.hint(@player.humancode, @AI.computercode, @board.feedback, @board.feedback_colors)
+        puts "\nNo. of turns left: #{@guesses}"
+        if @guesses == 0
+          puts "\n AI has lost! It didn't manage to guess within 12 tries. "
+          puts "\n The color code was #{@player.humancode.join('-')}"
+        end
       end
     end
   end
@@ -82,7 +91,7 @@ class Player
     while i < code.length
       if code[i] == guesses[i]
         feedback[i] = color[1]
-      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i])} #needs some fixes, for last part of this statement
+      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i]) #needs some fixes, for last part of this statement
         feedback[i] = "____"
       elsif code[i] != guesses[i] && code.include?(guesses[i])
         feedback[i] = color[0]
@@ -99,21 +108,46 @@ class Computer < Player
   attr_accessor :name, :computercode
   def initialize name
     @name = name
-    @computercode = []
+    @computercode = [" ", " ", " ", " "]
   end
 
   def generator array
-    color1 = array.sample(1).join("")
-    color2 = array.sample(1).join("")
-    color3 = array.sample(1).join("")
-    color4 = array.sample(1).join("")
-    @computercode << color1 << color2 << color3 << color4
+    colour1 = array.sample(1).join("")
+    colour2 = array.sample(1).join("")
+    colour3 = array.sample(1).join("")
+    colour4 = array.sample(1).join("")
+    @computercode[0] = colour1
+    @computercode[1] = colour2
+    @computercode[2] = colour3
+    @computercode[3] = colour4
+  end
+
+  def ai_guess array
+    if @computercode == array
+      puts "AI has won, it managed to guess the code!"
+      exit
+    else
+      puts "\nWrong guess!"
+    end
   end
 end
 
 class Human < Player
-  attr_accessor :name
+  attr_accessor :name, :humancode
   def initialize name
     @name = name
+    @humancode = []
+  end
+
+  def generate_code
+    puts "Choose your first colour"
+    colour1 = gets.chomp
+    puts "Choose your second colour"
+    colour2 = gets.chomp
+    puts "Choose your third colour"
+    colour3 = gets.chomp
+    puts "Choose your fourth colour"
+    colour4 = gets.chomp
+    @humancode << colour1 << colour2 << colour3
   end
 end
