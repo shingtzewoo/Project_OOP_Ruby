@@ -18,7 +18,7 @@ class Game
         @player.hint(@AI.computercode, @player.guess_array, @board.feedback, @board.feedback_colors)
         puts "\nNo. of turns left: #{@guesses}"
         if @guesses == 0
-          puts "\n You lost! You didn't manage to guess within 12 tries. "
+          puts "\n You lost! You didn't manage to guess within 12 tries."
           puts "\n The color code was #{@AI.computercode.join('-')}"
         end
       end
@@ -27,11 +27,11 @@ class Game
       while guesses > 0
         @AI.generator(@board.colors)
         @AI.ai_guess(@player.humancode)
-        guesses-=1
+        @guesses-=1
         @AI.hint(@player.humancode, @AI.computercode, @board.feedback, @board.feedback_colors)
         puts "\nNo. of turns left: #{@guesses}"
         if @guesses == 0
-          puts "\n AI has lost! It didn't manage to guess within 12 tries. "
+          puts "\n AI has lost! It didn't manage to guess within 12 tries."
           puts "\n The color code was #{@player.humancode.join('-')}"
         end
       end
@@ -148,6 +148,6 @@ class Human < Player
     colour3 = gets.chomp
     puts "Choose your fourth colour"
     colour4 = gets.chomp
-    @humancode << colour1 << colour2 << colour3
+    @humancode << colour1 << colour2 << colour3 << colour4
   end
 end
