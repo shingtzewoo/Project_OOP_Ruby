@@ -52,7 +52,7 @@ class Board
 end
 
 class Player
-  attr_accessor :guess_array
+  attr_accessor :guess_array, :collecting_array
   def guess(array, player)
     @guess_array = [" ", " ", " ", " "]
     puts "Colors: red, blue, yellow, green, purple, orange."
@@ -77,10 +77,13 @@ class Player
   end
 
   def hint(code, guesses, feedback, color)
+    @collecting_array = []
     i = 0
     while i < code.length
       if code[i] == guesses[i]
         feedback[i] = color[1]
+      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i])}
+        feedback[i] = "____"
       elsif code[i] != guesses[i] && code.include?(guesses[i])
         feedback[i] = color[0]
       elsif code[i] != guesses[i]
