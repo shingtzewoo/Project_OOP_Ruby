@@ -82,7 +82,7 @@ class Player
     while i < code.length
       if code[i] == guesses[i]
         feedback[i] = color[1]
-      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i])}
+      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i])} #needs some fixes, for last part of this statement
         feedback[i] = "____"
       elsif code[i] != guesses[i] && code.include?(guesses[i])
         feedback[i] = color[0]
