@@ -16,7 +16,7 @@ class Game
       while guesses > 0
         @player.guess(@AI.computercode, "You")
         @guesses-=1
-        @player.hint(@AI.computercode, @player.guess_array, @board.feedback, @board.feedback_colors)
+        @AI.hint(@AI.computercode, @player.guess_array, @board.feedback, @board.feedback_colors)
         puts "\nNo. of turns left: #{@guesses}"
         if @guesses == 0
           puts "\n You lost! You didn't manage to guess within 12 tries."
@@ -29,7 +29,7 @@ class Game
         @AI.generator(@board.colors)
         @AI.ai_guess(@player.humancode)
         @guesses-=1
-        @AI.hint(@player.humancode, @AI.computercode, @board.feedback, @board.feedback_colors)
+        @player.hint(@player.humancode, @AI.computercode, @board.feedback, @board.feedback_colors)
         puts "\nNo. of turns left: #{@guesses}"
         if @guesses == 0
           puts "\n AI has lost! It didn't manage to guess within 12 tries."
@@ -39,6 +39,7 @@ class Game
     end
   end
 
+#the start method is for the player to initiate the game
   def start
     puts "Do you want to be the codebreaker or codemaker?"
     case_tries
@@ -87,9 +88,10 @@ class Player
   end
 
   def hint(code, guesses, feedback, color)
-    @index_array = [] #index array is used to collect the indexes of duplicate colours in guesses
-    # because duplicate colours cannot all be awarded a key peg unless they correspond to the same number of duplicate colours in the hidden code
-    # the largest index in this array will be used as an index for the feedback array to change its value to "____" instead
+    @index_array = []
+    #index array is used to collect the indexes of duplicate colours in guesses
+    #because duplicate colours cannot all be awarded a key peg unless they correspond to the same number of duplicate colours in the hidden code
+    #the largest index in this array will be used as an index for the feedback array to change its value to "____" instead
     i = 0
     while i < code.length
       if code[i] == guesses[i]
@@ -102,13 +104,13 @@ class Player
               @index_array.push(index)
             end
           end
+          feedback[@index_array.max] = "____"
         end
       elsif code[i] != guesses[i]
         feedback[i] = "____"
       end
       i+=1
     end
-    feedback[@index_array.max] = "____"
     print "The hints are: #{feedback.join("|")}"
     @index_array.clear
   end
@@ -150,13 +152,14 @@ class Human < Player
   end
 
   def generate_code
-    puts "Choose your first colour"
+    puts "Colors you can choose: red, blue, yellow, green, purple, orange."
+    puts "\nChoose your first colour"
     colour1 = gets.chomp
-    puts "Choose your second colour"
+    puts "\nChoose your second colour"
     colour2 = gets.chomp
-    puts "Choose your third colour"
+    puts "\nChoose your third colour"
     colour3 = gets.chomp
-    puts "Choose your fourth colour"
+    puts "\nChoose your fourth colour"
     colour4 = gets.chomp
     @humancode << colour1 << colour2 << colour3 << colour4
   end
