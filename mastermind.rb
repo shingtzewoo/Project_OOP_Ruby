@@ -6,6 +6,7 @@ class Game
     @player = Human.new(player_name)
     @guesses = 12
     @answer = " "
+    @AI.generator(@board.colors)
   end
 
   def case_tries
@@ -91,10 +92,16 @@ class Player
     while i < code.length
       if code[i] == guesses[i]
         feedback[i] = color[1]
-      elsif code[i] != guesses[i] && code.include?(guesses[i]) && code.count(guesses[i]) < guesses.count(guesses[i]) #needs some fixes, for last part of this statement
-        feedback[i] = "____"
-      elsif code[i] != guesses[i] && code.include?(guesses[i])
-        feedback[i] = color[0]
+      elsif code[i] != guesses[i] && code.include?(guesses[i]) #needs some fixes, for last part of this statement
+        if guesses.count(guesses[i]) > code.count(guesses[i])
+           @collecting_array.push(guesses[i])
+          if @collecting_array.count(guesses[i]) > code.count(guesses[i])
+            feedback[i] = "____"
+          end
+        else
+          feedback[i] = color[0]
+        end
+      # elsif code[i] != guesses[i] && code.include?(guesses[i])
       elsif code[i] != guesses[i]
         feedback[i] = "____"
       end
