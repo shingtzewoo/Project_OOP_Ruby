@@ -62,7 +62,7 @@ class Board
 end
 
 class Player
-  attr_accessor :guess_array, :collecting_array
+  attr_accessor :guess_array, :index_array
   def guess(array, player)
     @guess_array = [" ", " ", " ", " "]
     puts "Colors: red, blue, yellow, green, purple, orange."
@@ -87,27 +87,30 @@ class Player
   end
 
   def hint(code, guesses, feedback, color)
-    @collecting_array = []
+    @index_array = [] #index array is used to collect the indexes of duplicate colours in guesses
+    # because duplicate colours cannot all be awarded a key peg unless they correspond to the same number of duplicate colours in the hidden code
+    # the largest index in this array will be used as an index for the feedback array to change its value to "____" instead
     i = 0
     while i < code.length
       if code[i] == guesses[i]
         feedback[i] = color[1]
-      elsif code[i] != guesses[i] && code.include?(guesses[i]) #needs some fixes, for last part of this statement
+      elsif code[i] != guesses[i] && code.include?(guesses[i])
+        feedback[i] = color[0]
         if guesses.count(guesses[i]) > code.count(guesses[i])
-           @collecting_array.push(guesses[i])
-          if @collecting_array.count(guesses[i]) > code.count(guesses[i])
-            feedback[i] = "____"
+          guesses.each_with_index do |obj, index|
+            if obj == guesses[i]
+              @index_array.push(index)
+            end
           end
-        else
-          feedback[i] = color[0]
         end
-      # elsif code[i] != guesses[i] && code.include?(guesses[i])
       elsif code[i] != guesses[i]
         feedback[i] = "____"
       end
       i+=1
     end
+    feedback[@index_array.max] = "____"
     print "The hints are: #{feedback.join("|")}"
+    @index_array.clear
   end
 end
 
