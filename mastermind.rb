@@ -156,11 +156,12 @@ class Computer < Player
       @computercode[2] = colour3
       @computercode[3] = colour4
     else
-      while i < @computercode.length
+      while i < @computercode.length #some changes needed, something wrong happening here
         if feedback[i] == "white"
-          @computercode[j] = computercode[i]
+          @computercode[j] = @computercode[i]
+          @computercode[i] = array.sample(1).join("")
         elsif feedback[i] == "black"
-          @computercode[i] = computercode[i]
+          @computercode[i] = @computercode[i]
         elsif feedback[i] == "____"
           @computercode[i] = array.sample(1).join("")
         end
