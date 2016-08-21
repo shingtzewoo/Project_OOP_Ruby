@@ -6,13 +6,13 @@ class Game
     @player = Human.new(player_name)
     @guesses = 12
     @answer = " "
-    @AI.generator(@board.colors)
   end
 
   def case_tries
     @answer = gets.chomp
     case @answer
     when "codebreaker"
+      @AI.ai_generate_code(@board.colors)
       while guesses > 0
         @player.guess(@AI.computercode, "You")
         @guesses-=1
@@ -26,8 +26,8 @@ class Game
     when "codemaker"
       @player.generate_code
       while guesses > 0
-        @AI.generator(@board.colors)
-        @AI.ai_guess(@player.humancode)
+        @AI.ai_guess(@board.colors, @guesses, @board.feedback)
+        @AI.outcome(@player.humancode)
         @guesses-=1
         @player.hint(@player.humancode, @AI.computercode, @board.feedback, @board.feedback_colors)
         puts "\nNo. of turns left: #{@guesses}"
@@ -123,7 +123,16 @@ class Computer < Player
     @computercode = [" ", " ", " ", " "]
   end
 
-  def generator array
+  def outcome code
+    if @computercode == code
+      puts "AI has won, it managed to guess the code!"
+      exit
+    else
+      puts "\nWrong guess!"
+    end
+  end
+
+  def ai_generate_code array
     colour1 = array.sample(1).join("")
     colour2 = array.sample(1).join("")
     colour3 = array.sample(1).join("")
@@ -134,13 +143,34 @@ class Computer < Player
     @computercode[3] = colour4
   end
 
-  def ai_guess array
-    if @computercode == array
-      puts "AI has won, it managed to guess the code!"
-      exit
+  def ai_guess(array, guesses, feedback)
+    i = 0
+    j = i + 1
+    if guesses > 11
+      colour1 = array.sample(1).join("")
+      colour2 = array.sample(1).join("")
+      colour3 = array.sample(1).join("")
+      colour4 = array.sample(1).join("")
+      @computercode[0] = colour1
+      @computercode[1] = colour2
+      @computercode[2] = colour3
+      @computercode[3] = colour4
     else
-      puts "\nWrong guess!"
+      while i < @computercode.length
+        if feedback[i] == "white"
+          @computercode[j] = computercode[i]
+        elsif feedback[i] == "black"
+          @computercode[i] = computercode[i]
+        elsif feedback[i] == "____"
+          @computercode[i] = array.sample(1).join("")
+        end
+        if j == 3
+          j = 0
+        end
+        i+=1
+      end
     end
+    print "The computer's code is: #{@computercode}!"
   end
 end
 
